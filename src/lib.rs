@@ -6,6 +6,12 @@ mod kw {
     syn::custom_keyword!(plus);
 }
 
+struct BasicSentence {
+    pub one_token: kw::one,
+    pub plus_token: kw::plus,
+    pub two_token: kw::two,
+}
+
 pub fn evaluate_math_lingo(input: TokenStream) -> TokenStream{
     input
 }
