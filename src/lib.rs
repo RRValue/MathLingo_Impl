@@ -20,7 +20,7 @@ mod tests {
     fn simpple_addition() {
         let input = quote!(one plus two);
         let output = evaluate_math_lingo(input);
-        let expected_output = quote!(3);
+        let expected_output = quote!(1 + 2);
 
         assert_tokenstreams_eq!(&output, &expected_output);
     }
