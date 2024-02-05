@@ -150,14 +150,18 @@ pub fn evaluate_math_lingo(input: TokenStream) -> TokenStream{
 #[cfg(test)]
 mod tests {
     use super::*;
-    use assert_tokenstreams_eq::assert_tokenstreams_eq;
 
     #[test]
     fn simple_addition() {
         let input = quote!(one plus two);
+        let input_str = format!("{}", input);
+        
         let output = evaluate_math_lingo(input);
-        let expected_output = quote!(1 + 2);
+        let output_str = format!("{:?}", output);
 
-        assert_tokenstreams_eq!(&output, &expected_output);
+        let expected_output = quote!(1 + 2);
+        let expected_output_str = format!("{}", expected_output);
+
+        assert_eq!(output_str, expected_output_str)
     }
 }
