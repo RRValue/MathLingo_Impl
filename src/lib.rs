@@ -166,16 +166,10 @@ mod tests {
     use super::*;
 
     #[test]
-    fn simple_addition() {
-        let input = quote!(one plus two);
-        let input_str = format!("{}", input);
-        
-        let output = evaluate_math_lingo(input);
-        let output_str = format!("{}", output);
-
+    fn simple_addition() {        
+        let output = evaluate_math_lingo(quote!(one plus two));
         let expected_output = quote!(1 + 2);
-        let expected_output_str = format!("{}", expected_output);
-
-        assert_eq!(output_str, expected_output_str)
+        
+        assert_eq!(output.to_string(), expected_output.to_string())
     }
 }
