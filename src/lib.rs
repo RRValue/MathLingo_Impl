@@ -1,5 +1,11 @@
 use proc_macro2::TokenStream;
 
+mod kw {
+    syn::custom_keyword!(one);
+    syn::custom_keyword!(two);
+    syn::custom_keyword!(plus);
+}
+
 pub fn evaluate_math_lingo(input: TokenStream) -> TokenStream{
     input
 }
