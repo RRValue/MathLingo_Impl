@@ -1,6 +1,14 @@
+use proc_macro2::TokenStream;
+
+pub fn evaluate_math_lingo(input: TokenStream) -> TokenStream{
+    input
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use quote::quote;
+    use assert_tokenstreams_eq::assert_tokenstreams_eq;
 
     #[test]
     fn simpple_addition() {
