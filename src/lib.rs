@@ -132,17 +132,17 @@ impl Operation {
 }
 
 struct BasicSentence {
-    pub numer_left: Number,
+    pub number_left: Number,
     pub operation: Operation,
-    pub numer_right: Number,
+    pub number_right: Number,
 }
 
 impl Parse for BasicSentence {
     fn parse(input: ParseStream) -> Result<Self> {
-        let numer_left: Number = input.parse()?;
+        let number_left: Number = input.parse()?;
         let operation: Operation = input.parse()?;
-        let numer_right: Number = input.parse()?;
-        Ok(BasicSentence{numer_left, operation, numer_right})
+        let number_right: Number = input.parse()?;
+        Ok(BasicSentence{number_left, operation, number_right})
     }
 }
 
@@ -154,9 +154,9 @@ pub fn evaluate_math_lingo(input: TokenStream) -> TokenStream{
         }
     };
 
-    let left_ts = sentence.numer_left.quote();
+    let left_ts = sentence.number_left.quote();
     let operation_ts = sentence.operation.quote();
-    let right_ts = sentence.numer_right.quote();
+    let right_ts = sentence.number_right.quote();
 
     quote!(#left_ts #operation_ts #right_ts)
 }
