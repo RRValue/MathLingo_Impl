@@ -39,24 +39,34 @@ impl Parse for Number {
         let lookahead = input.lookahead1();
 
         if lookahead.peek(kw::zero) {
+            input.parse::<kw::zero>()?;
             Ok(Number::Zero)
         } else if lookahead.peek(kw::one) {
+            input.parse::<kw::one>()?;
             Ok(Number::One)
         } else if lookahead.peek(kw::two) {
+            input.parse::<kw::two>()?;
             Ok(Number::Two)
         } else if lookahead.peek(kw::three) {
+            input.parse::<kw::three>()?;
             Ok(Number::Three)
         } else if lookahead.peek(kw::four) {
+            input.parse::<kw::four>()?;
             Ok(Number::Four)
         } else if lookahead.peek(kw::five) {
+            input.parse::<kw::five>()?;
             Ok(Number::Five)
         } else if lookahead.peek(kw::six) {
+            input.parse::<kw::six>()?;
             Ok(Number::Six)
         } else if lookahead.peek(kw::seven) {
+            input.parse::<kw::seven>()?;
             Ok(Number::Seven)
         } else if lookahead.peek(kw::eight) {
+            input.parse::<kw::eight>()?;
             Ok(Number::Eight)
         } else if lookahead.peek(kw::nine) {
+            input.parse::<kw::nine>()?;
             Ok(Number::Nine)
         } else {
             Err(lookahead.error())
@@ -92,13 +102,17 @@ impl Parse for Operation {
     fn parse(input: ParseStream) -> Result<Self> {
         let lookahead = input.lookahead1();
 
-        if lookahead.peek(kw::zero) {
+        if lookahead.peek(kw::plus) {
+            input.parse::<kw::plus>()?;
             Ok(Operation::Plus)
-        } else if lookahead.peek(kw::one) {
+        } else if lookahead.peek(kw::minus) {
+            input.parse::<kw::minus>()?;
             Ok(Operation::Minus)
-        } else if lookahead.peek(kw::two) {
+        } else if lookahead.peek(kw::time) {
+            input.parse::<kw::time>()?;
             Ok(Operation::Time)
-        } else if lookahead.peek(kw::three) {
+        } else if lookahead.peek(kw::through) {
+            input.parse::<kw::through>()?;
             Ok(Operation::Through)
         } else {
             Err(lookahead.error())
@@ -109,10 +123,10 @@ impl Parse for Operation {
 impl Operation {
     fn quote(&self) -> TokenStream{
         match self {
-            Operation::Plus => quote!(0),
-            Operation::Minus => quote!(1),
-            Operation::Time => quote!(2),
-            Operation::Through => quote!(3),
+            Operation::Plus => quote!(+),
+            Operation::Minus => quote!(-),
+            Operation::Time => quote!(*),
+            Operation::Through => quote!(/),
         }
     }
 }
@@ -157,7 +171,7 @@ mod tests {
         let input_str = format!("{}", input);
         
         let output = evaluate_math_lingo(input);
-        let output_str = format!("{:?}", output);
+        let output_str = format!("{}", output);
 
         let expected_output = quote!(1 + 2);
         let expected_output_str = format!("{}", expected_output);
