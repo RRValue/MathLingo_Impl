@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 use syn::parse::{Parse, ParseStream};
-use syn::{LitInt, Result};
+use syn::{LitFloat, LitInt, Result};
 use quote::{quote, ToTokens};
 
 mod kw {
@@ -53,7 +53,8 @@ impl Number {
 
 enum NumberRep {
     NumberStr(Number),
-    NumberLit(LitInt)
+    NumberLitInt(LitInt),
+    NumberLitFloat(LitFloat)
 }
 
 impl Parse for NumberRep {
@@ -91,7 +92,9 @@ impl Parse for NumberRep {
             input.parse::<kw::nine>()?;
             Ok(NumberRep::NumberStr(Number::Nine))
         } else if lookahead.peek(LitInt) {
-            Ok(NumberRep::NumberLit(input.parse::<LitInt>()?))
+            Ok(NumberRep::NumberLitInt(input.parse::<LitInt>()?))
+        } else if lookahead.peek(LitFloat) {
+            Ok(NumberRep::NumberLitFloat(input.parse::<LitFloat>()?))
         } else {
             Err(lookahead.error())
         }
@@ -102,7 +105,8 @@ impl NumberRep {
     fn quote(&self) -> TokenStream{
         match self {
             NumberRep::NumberStr(value) => value.quote(),
-            NumberRep::NumberLit(lit) => lit.to_token_stream(),
+            NumberRep::NumberLitInt(lit) => lit.to_token_stream(),
+            NumberRep::NumberLitFloat(lit) => lit.to_token_stream(),
         }
     }
 }
@@ -182,7 +186,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn simple_addition_literals() {        
+    fn simple_addition_int_number() {        
         let output = evaluate_math_lingo(quote!(1 plus 2));
         let expected_output = quote!(1 + 2);
         
@@ -190,7 +194,15 @@ mod tests {
     }
 
     #[test]
-    fn simple_addition() {        
+    fn simple_addition_float_number() {        
+        let output = evaluate_math_lingo(quote!(1.11 plus 2.22));
+        let expected_output = quote!(1.11 + 2.22);
+        
+        assert_eq!(output.to_string(), expected_output.to_string())
+    }
+
+    #[test]
+    fn simple_addition_named_number() {        
         let output = evaluate_math_lingo(quote!(one plus two));
         let expected_output = quote!(1 + 2);
         
