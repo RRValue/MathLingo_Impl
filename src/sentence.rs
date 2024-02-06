@@ -36,8 +36,9 @@ mod tests {
 
     #[test]
     fn test_sentences() {        
-        assert_eq!(syn::parse2::<Sentence>(quote!(1 plus 2)).unwrap().quote().to_string(), quote!(1 + 2).to_string());
+        assert_eq!(syn::parse2::<Sentence>(quote!(1 plus 2)).unwrap().quote().to_string(), quote!(1.0 + 2.0).to_string());
         assert_eq!(syn::parse2::<Sentence>(quote!(1.11 plus 2.22)).unwrap().quote().to_string(), quote!(1.11 + 2.22).to_string());
-        assert_eq!(syn::parse2::<Sentence>(quote!(one through three)).unwrap().quote().to_string(), quote!(1 / 3).to_string());
+        assert_eq!(syn::parse2::<Sentence>(quote!(one through three)).unwrap().quote().to_string(), quote!(1.0 / 3.0).to_string());
+        assert_eq!(syn::parse2::<Sentence>(quote!(1 through 3.0)).unwrap().quote().to_string(), quote!(1.0 / 3.0).to_string());
     }
 }

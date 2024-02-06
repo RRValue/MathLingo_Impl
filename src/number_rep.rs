@@ -1,7 +1,7 @@
-use proc_macro2::TokenStream;
+use proc_macro2::{TokenStream, Literal};
 use syn::parse::{Parse, ParseStream};
 use syn::{LitFloat, LitInt, Result};
-use quote::{quote, ToTokens};
+use quote::ToTokens;
 
 mod kw {
     syn::custom_keyword!(zero);
@@ -30,18 +30,18 @@ pub enum Number {
 }
 
 impl Number {
-    fn quote(&self) -> TokenStream{
+    fn to_f32(&self) -> f32{
         match self {
-            Number::Zero => quote!(0),
-            Number::One => quote!(1),
-            Number::Two => quote!(2),
-            Number::Three => quote!(3),
-            Number::Four => quote!(4),
-            Number::Five => quote!(5),
-            Number::Six => quote!(6),
-            Number::Seven => quote!(7),
-            Number::Eight => quote!(8),
-            Number::Nine => quote!(9),
+            Number::Zero => 0.0,
+            Number::One => 1.0,
+            Number::Two => 2.0,
+            Number::Three => 3.0,
+            Number::Four => 4.0,
+            Number::Five => 5.0,
+            Number::Six => 6.0,
+            Number::Seven => 7.0,
+            Number::Eight => 8.0,
+            Number::Nine => 9.0,
         }
     }
 }
@@ -99,8 +99,9 @@ impl Parse for NumberRep {
 impl NumberRep {
     pub fn quote(&self) -> TokenStream{
         match self {
-            NumberRep::NumberStr(value) => value.quote(),
-            NumberRep::NumberLitInt(lit) => lit.to_token_stream(),
+            NumberRep::NumberStr(value) => Literal::f32_unsuffixed(value.to_f32()).to_token_stream(),
+            // unwrap is save, since parse NumberRep already checks if NumberLitInt is a valid number.
+            NumberRep::NumberLitInt(lit) => Literal::f32_unsuffixed(lit.base10_parse::<i32>().unwrap() as f32).to_token_stream(),
             NumberRep::NumberLitFloat(lit) => lit.to_token_stream(),
         }
     }
@@ -109,32 +110,33 @@ impl NumberRep {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use quote::quote;
 
     #[test]
     fn parse_number_number_token() {        
-        assert_eq!(syn::parse2::<NumberRep>(quote!(zero)).unwrap().quote().to_string(), quote!(0).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(one)).unwrap().quote().to_string(), quote!(1).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(two)).unwrap().quote().to_string(), quote!(2).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(three)).unwrap().quote().to_string(), quote!(3).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(four)).unwrap().quote().to_string(), quote!(4).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(five)).unwrap().quote().to_string(), quote!(5).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(six)).unwrap().quote().to_string(), quote!(6).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(seven)).unwrap().quote().to_string(), quote!(7).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(eight)).unwrap().quote().to_string(), quote!(8).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(nine)).unwrap().quote().to_string(), quote!(9).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(zero)).unwrap().quote().to_string(), quote!(0.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(one)).unwrap().quote().to_string(), quote!(1.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(two)).unwrap().quote().to_string(), quote!(2.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(three)).unwrap().quote().to_string(), quote!(3.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(four)).unwrap().quote().to_string(), quote!(4.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(five)).unwrap().quote().to_string(), quote!(5.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(six)).unwrap().quote().to_string(), quote!(6.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(seven)).unwrap().quote().to_string(), quote!(7.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(eight)).unwrap().quote().to_string(), quote!(8.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(nine)).unwrap().quote().to_string(), quote!(9.0).to_string());
     }
 
     #[test]
     fn parse_number_number_lit_int() {        
-        assert_eq!(syn::parse2::<NumberRep>(quote!(0)).unwrap().quote().to_string(), quote!(0).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(1)).unwrap().quote().to_string(), quote!(1).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(-1)).unwrap().quote().to_string(), quote!(-1).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(2)).unwrap().quote().to_string(), quote!(2).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(-2)).unwrap().quote().to_string(), quote!(-2).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(12)).unwrap().quote().to_string(), quote!(12).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(-12)).unwrap().quote().to_string(), quote!(-12).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(123)).unwrap().quote().to_string(), quote!(123).to_string());
-        assert_eq!(syn::parse2::<NumberRep>(quote!(-123)).unwrap().quote().to_string(), quote!(-123).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(0)).unwrap().quote().to_string(), quote!(0.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(1)).unwrap().quote().to_string(), quote!(1.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(-1)).unwrap().quote().to_string(), quote!(-1.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(2)).unwrap().quote().to_string(), quote!(2.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(-2)).unwrap().quote().to_string(), quote!(-2.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(12)).unwrap().quote().to_string(), quote!(12.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(-12)).unwrap().quote().to_string(), quote!(-12.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(123)).unwrap().quote().to_string(), quote!(123.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(-123)).unwrap().quote().to_string(), quote!(-123.0).to_string());
     }
 
     #[test]
