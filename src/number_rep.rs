@@ -105,3 +105,48 @@ impl NumberRep {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_number_number_token() {        
+        assert_eq!(syn::parse2::<NumberRep>(quote!(zero)).unwrap().quote().to_string(), quote!(0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(one)).unwrap().quote().to_string(), quote!(1).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(two)).unwrap().quote().to_string(), quote!(2).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(three)).unwrap().quote().to_string(), quote!(3).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(four)).unwrap().quote().to_string(), quote!(4).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(five)).unwrap().quote().to_string(), quote!(5).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(six)).unwrap().quote().to_string(), quote!(6).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(seven)).unwrap().quote().to_string(), quote!(7).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(eight)).unwrap().quote().to_string(), quote!(8).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(nine)).unwrap().quote().to_string(), quote!(9).to_string());
+    }
+
+    #[test]
+    fn parse_number_number_lit_int() {        
+        assert_eq!(syn::parse2::<NumberRep>(quote!(0)).unwrap().quote().to_string(), quote!(0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(1)).unwrap().quote().to_string(), quote!(1).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(-1)).unwrap().quote().to_string(), quote!(-1).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(2)).unwrap().quote().to_string(), quote!(2).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(-2)).unwrap().quote().to_string(), quote!(-2).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(12)).unwrap().quote().to_string(), quote!(12).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(-12)).unwrap().quote().to_string(), quote!(-12).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(123)).unwrap().quote().to_string(), quote!(123).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(-123)).unwrap().quote().to_string(), quote!(-123).to_string());
+    }
+
+    #[test]
+    fn parse_number_number_lit_float() {        
+        assert_eq!(syn::parse2::<NumberRep>(quote!(0.0)).unwrap().quote().to_string(), quote!(0.0).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(1.1)).unwrap().quote().to_string(), quote!(1.1).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(-1.2)).unwrap().quote().to_string(), quote!(-1.2).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(2.03)).unwrap().quote().to_string(), quote!(2.03).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(-2.11)).unwrap().quote().to_string(), quote!(-2.11).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(12.412)).unwrap().quote().to_string(), quote!(12.412).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(-12.4134)).unwrap().quote().to_string(), quote!(-12.4134).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(123.44)).unwrap().quote().to_string(), quote!(123.44).to_string());
+        assert_eq!(syn::parse2::<NumberRep>(quote!(-123.1)).unwrap().quote().to_string(), quote!(-123.1).to_string());
+    }
+}

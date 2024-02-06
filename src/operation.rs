@@ -49,3 +49,16 @@ impl Operation {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_operation_token() {        
+        assert_eq!(syn::parse2::<Operation>(quote!(plus)).unwrap().quote().to_string(), quote!(+).to_string());
+        assert_eq!(syn::parse2::<Operation>(quote!(minus)).unwrap().quote().to_string(), quote!(-).to_string());
+        assert_eq!(syn::parse2::<Operation>(quote!(time)).unwrap().quote().to_string(), quote!(*).to_string());
+        assert_eq!(syn::parse2::<Operation>(quote!(through)).unwrap().quote().to_string(), quote!(/).to_string());
+    }
+}
