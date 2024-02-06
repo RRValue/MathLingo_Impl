@@ -7,9 +7,9 @@ use syn::Result;
 use quote::quote;
 
 pub struct Sentence {
-    pub number_left: NumberRep,
-    pub operation: Operation,
-    pub number_right: NumberRep,
+    number_left: NumberRep,
+    operation: Operation,
+    number_right: NumberRep,
 }
 
 impl Parse for Sentence {
