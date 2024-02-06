@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 use syn::parse::{Parse, ParseStream};
-use syn::Result;
+use syn::{Result, Token};
 use quote::quote;
 
 mod kw {
@@ -33,6 +33,18 @@ impl Parse for Operation {
         } else if lookahead.peek(kw::through) {
             input.parse::<kw::through>()?;
             Ok(Operation::Through)
+        } else if lookahead.peek(Token![+]) {
+            input.parse::<Token![+]>()?;
+            Ok(Operation::Plus)
+        } else if lookahead.peek(Token![-]) {
+            input.parse::<Token![-]>()?;
+            Ok(Operation::Minus)
+        } else if lookahead.peek(Token![*]) {
+            input.parse::<Token![*]>()?;
+            Ok(Operation::Time)
+        } else if lookahead.peek(Token![/]) {
+            input.parse::<Token![/]>()?;
+            Ok(Operation::Through)
         } else {
             Err(lookahead.error())
         }
@@ -60,5 +72,13 @@ mod tests {
         assert_eq!(syn::parse2::<Operation>(quote!(minus)).unwrap().quote().to_string(), quote!(-).to_string());
         assert_eq!(syn::parse2::<Operation>(quote!(time)).unwrap().quote().to_string(), quote!(*).to_string());
         assert_eq!(syn::parse2::<Operation>(quote!(through)).unwrap().quote().to_string(), quote!(/).to_string());
+    }
+
+    #[test]
+    fn parse_operation_literals() {        
+        assert_eq!(syn::parse2::<Operation>(quote!(+)).unwrap().quote().to_string(), quote!(+).to_string());
+        assert_eq!(syn::parse2::<Operation>(quote!(-)).unwrap().quote().to_string(), quote!(-).to_string());
+        assert_eq!(syn::parse2::<Operation>(quote!(*)).unwrap().quote().to_string(), quote!(*).to_string());
+        assert_eq!(syn::parse2::<Operation>(quote!(/)).unwrap().quote().to_string(), quote!(/).to_string());
     }
 }
