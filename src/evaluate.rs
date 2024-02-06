@@ -1,4 +1,4 @@
-use super::*;
+use crate::sentence::Sentence;
 
 use proc_macro2::TokenStream;
 

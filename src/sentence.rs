@@ -1,4 +1,5 @@
-use super::*;
+use crate::number_rep::NumberRep;
+use crate::operation::Operation;
 
 use proc_macro2::TokenStream;
 use syn::parse::{Parse, ParseStream};
