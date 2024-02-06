@@ -4,10 +4,13 @@ use syn::{Result, Token};
 use quote::quote;
 
 mod kw {
-    syn::custom_keyword!(plus);
-    syn::custom_keyword!(minus);
-    syn::custom_keyword!(time);
-    syn::custom_keyword!(through);
+    syn::custom_keyword!(plus);    // -> '+'
+    syn::custom_keyword!(minus);   // -> '-'
+    syn::custom_keyword!(time);    // -> '*'
+    syn::custom_keyword!(times);   // -> '*'
+    syn::custom_keyword!(through); // -> '/'
+    syn::custom_keyword!(devided); // in conjunction with "by" -> '/'
+    syn::custom_keyword!(by);      // in conjunction with "devided" -> '/'
 }
 
 pub enum Operation {
@@ -30,8 +33,15 @@ impl Parse for Operation {
         } else if lookahead.peek(kw::time) {
             input.parse::<kw::time>()?;
             Ok(Operation::Time)
+        } else if lookahead.peek(kw::times) {
+            input.parse::<kw::times>()?;
+            Ok(Operation::Time)
         } else if lookahead.peek(kw::through) {
             input.parse::<kw::through>()?;
+            Ok(Operation::Through)
+        } else if lookahead.peek(kw::devided) {
+            input.parse::<kw::devided>()?;
+            input.parse::<kw::by>()?;
             Ok(Operation::Through)
         } else if lookahead.peek(Token![+]) {
             input.parse::<Token![+]>()?;
@@ -71,7 +81,9 @@ mod tests {
         assert_eq!(syn::parse2::<Operation>(quote!(plus)).unwrap().quote().to_string(), quote!(+).to_string());
         assert_eq!(syn::parse2::<Operation>(quote!(minus)).unwrap().quote().to_string(), quote!(-).to_string());
         assert_eq!(syn::parse2::<Operation>(quote!(time)).unwrap().quote().to_string(), quote!(*).to_string());
+        assert_eq!(syn::parse2::<Operation>(quote!(times)).unwrap().quote().to_string(), quote!(*).to_string());
         assert_eq!(syn::parse2::<Operation>(quote!(through)).unwrap().quote().to_string(), quote!(/).to_string());
+        assert_eq!(syn::parse2::<Operation>(quote!(devided by)).unwrap().quote().to_string(), quote!(/).to_string());
     }
 
     #[test]
